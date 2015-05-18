@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * File Name          : main.c
-  * Date               : 18/05/2015 17:26:27
+  * Date               : 18/05/2015 19:31:06
   * Description        : Main program body
   ******************************************************************************
   *
@@ -38,6 +38,8 @@
 
 /* USER CODE BEGIN Includes */
 #include "FreeRTOS_CLI.h"
+
+#include "FreeRTOS_IO.h"
 
 /* USER CODE END Includes */
 
