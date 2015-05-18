@@ -37,6 +37,7 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
+#include "FreeRTOS_CLI.h"
 
 /* USER CODE END Includes */
 

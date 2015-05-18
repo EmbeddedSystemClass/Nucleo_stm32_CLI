@@ -164,6 +164,12 @@ standard names. */
 
 /* USER CODE BEGIN Defines */   	      
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
+
+/* Dimensions a buffer that can be used by the FreeRTOS+CLI command
+interpreter.  Set this value to 1 to save RAM if FreeRTOS+CLI does not supply
+the output butter.  See the FreeRTOS+CLI documentation for more information:
+http://www.FreeRTOS.org/FreeRTOS-Plus/FreeRTOS_Plus_CLI/ */
+#define configCOMMAND_INT_MAX_OUTPUT_SIZE			1024
 /* USER CODE END Defines */ 
 
 #endif /* FREERTOS_CONFIG_H */
