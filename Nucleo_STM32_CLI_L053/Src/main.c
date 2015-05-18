@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * File Name          : main.c
-  * Date               : 18/05/2015 19:31:06
+  * Date               : 19/05/2015 06:36:47
   * Description        : Main program body
   ******************************************************************************
   *
@@ -37,9 +37,6 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
-#include "FreeRTOS_CLI.h"
-
-#include "FreeRTOS_IO.h"
 
 /* USER CODE END Includes */
 
@@ -230,8 +227,7 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    HAL_GPIO_TogglePin(GPIOA ,GPIO_PIN_5);
-    osDelay(1000);
+    osDelay(1);
   }
   /* USER CODE END 5 */ 
 }

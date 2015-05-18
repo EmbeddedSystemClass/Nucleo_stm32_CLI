@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * File Name          : freertos.c
-  * Date               : 18/05/2015 19:31:05
+  * Date               : 19/05/2015 06:36:46
   * Description        : Code for freertos applications
   ******************************************************************************
   *
@@ -52,6 +52,21 @@
 
 /* USER CODE END FunctionPrototypes */
 /* Hook prototypes */
+void configureTimerForRunTimeStats(void);
+unsigned long getRunTimeCounterValue(void);
+
+/* USER CODE BEGIN 1 */
+/* Functions needed when configGENERATE_RUN_TIME_STATS is on */
+void configureTimerForRunTimeStats(void)
+{
+
+}
+
+unsigned long getRunTimeCounterValue(void)
+{
+return 0;
+}
+/* USER CODE END 1 */
 
 /* USER CODE BEGIN Application */
      

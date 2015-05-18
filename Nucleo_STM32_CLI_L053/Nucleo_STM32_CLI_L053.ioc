@@ -1,7 +1,8 @@
 #MicroXplorer Configuration settings - do not modify
-#Mon May 18 20:06:24 CST 2015
-FREERTOS.IPParameters=Tasks01
+#Tue May 19 06:36:46 CST 2015
+FREERTOS.IPParameters=Tasks01,configGENERATE_RUN_TIME_STATS
 FREERTOS.Tasks01=defaultTask,0,128,StartDefaultTask
+FREERTOS.configGENERATE_RUN_TIME_STATS=1
 File.Version=5
 KeepUserPlacement=true
 Mcu.Family=STM32L0
@@ -116,7 +117,7 @@ RCC.HSI16_VALUE=16000000
 RCC.HSI48_VALUE=48000000
 RCC.HSI_VALUE=16000000
 RCC.I2C1Freq_Value=2097000
-RCC.IPParameters=LSI_VALUE,APB1TimFreq_Value,APB2Freq_Value,HSI16_VALUE,LSEState,TIMFreq_Value,AHBFreq_Value,ClockTypeSysClk,SYSCLKFreq_VALUE,USART1Freq_Value,LSE_VALUE,HSE_VALUE,HSI_VALUE,LPTIMFreq_Value,PLLCLKFreq_Value,48CLKFreq_Value,MSI_VALUE,HSI48_VALUE,RTCFreq_Value,FamilyName,PWRFreq_Value,USART2Freq_Value,WatchDogFreq_Value,VCOOutputFreq_Value,I2C1Freq_Value,APB1Freq_Value,RTCHSEDivFreq_Value,TimerFreq_Value,LPUARTFreq_Value,LCDFreq_Value,APB2TimFreq_Value
+RCC.IPParameters=LSI_VALUE,APB1TimFreq_Value,APB2Freq_Value,HSI16_VALUE,LSEState,TIMFreq_Value,AHBFreq_Value,ClockTypeSysClk,SYSCLKFreq_VALUE,USART1Freq_Value,LSE_VALUE,HSE_VALUE,HSI_VALUE,LPTIMFreq_Value,PLLCLKFreq_Value,MSI_VALUE,48CLKFreq_Value,HSI48_VALUE,RTCFreq_Value,FamilyName,PWRFreq_Value,USART2Freq_Value,WatchDogFreq_Value,VCOOutputFreq_Value,I2C1Freq_Value,APB1Freq_Value,RTCHSEDivFreq_Value,TimerFreq_Value,LPUARTFreq_Value,LCDFreq_Value,APB2TimFreq_Value
 RCC.LCDFreq_Value=37000
 RCC.LPTIMFreq_Value=2097000
 RCC.LPUARTFreq_Value=2097000

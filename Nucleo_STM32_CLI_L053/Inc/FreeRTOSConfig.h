@@ -62,7 +62,7 @@
 /**
   ******************************************************************************
   * File Name          : FreeRTOSConfig.h
-  * Date               : 18/05/2015 19:31:05
+  * Date               : 19/05/2015 06:36:46
   ******************************************************************************
   */
 
@@ -89,6 +89,10 @@
 #if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
     #include <stdint.h>
     extern uint32_t SystemCoreClock;
+/* USER CODE BEGIN 0 */   	      
+    extern void configureTimerForRunTimeStats(void);
+    extern unsigned long getRunTimeCounterValue(void);  
+/* USER CODE END 0 */       
 #endif
 
 #define configUSE_PREEMPTION                     1
@@ -106,6 +110,7 @@
 #define configQUEUE_REGISTRY_SIZE                8
 #define configUSE_RECURSIVE_MUTEXES              1
 #define configUSE_COUNTING_SEMAPHORES            1
+#define configGENERATE_RUN_TIME_STATS            1
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES                    0
@@ -162,14 +167,39 @@ standard names. */
               to prevent overwriting SysTick_Handler defined within STM32Cube HAL */
 /* #define xPortSysTickHandler SysTick_Handler */
 
+/* USER CODE BEGIN 2 */    
+/* Definitions needed when configGENERATE_RUN_TIME_STATS is on */
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS configureTimerForRunTimeStats
+#define portGET_RUN_TIME_COUNTER_VALUE getRunTimeCounterValue    
+/* USER CODE END 2 */
+
 /* USER CODE BEGIN Defines */   	      
+#define configGENERATE_RUN_TIME_STATS   1
+#define configUSE_STATS_FORMATTING_FUNCTIONS   1
+
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
+/* Priorities to assign to tasks created by this demo. */
+#define configUART_COMMAND_CONSOLE_TASK_PRIORITY	( 3U )
+#define configSPI_7_SEG_WRITE_TASK_PRIORITY			( 2U )
+#define configI2C_TASK_PRIORITY						( 0U )
+
+/* Stack sizes to assign to tasks created by this demo. */
+#define configUART_COMMAND_CONSOLE_STACK_SIZE		( configMINIMAL_STACK_SIZE * 2 )
+#define configSPI_7_SEG_WRITE_TASK_STACK_SIZE		( configMINIMAL_STACK_SIZE * 2 )
+#define configI2C_TASK_STACK_SIZE					( configMINIMAL_STACK_SIZE * 3 )
 
 /* Dimensions a buffer that can be used by the FreeRTOS+CLI command
 interpreter.  Set this value to 1 to save RAM if FreeRTOS+CLI does not supply
 the output butter.  See the FreeRTOS+CLI documentation for more information:
 http://www.FreeRTOS.org/FreeRTOS-Plus/FreeRTOS_Plus_CLI/ */
 #define configCOMMAND_INT_MAX_OUTPUT_SIZE			1024
+
+/* The maximum priority an interrupt that uses an interrupt safe FreeRTOS API
+function can have.  Note that lower priority have numerically higher values.  */
+#define configMAX_LIBRARY_INTERRUPT_PRIORITY	( 5 )
+
+/* The minimum possible interrupt priority. */
+#define configMIN_LIBRARY_INTERRUPT_PRIORITY	( 31 )
 /* USER CODE END Defines */ 
 
 #endif /* FREERTOS_CONFIG_H */
