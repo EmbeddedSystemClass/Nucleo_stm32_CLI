@@ -1,3 +1,5 @@
 =====
-Command Line Interface for Nucleo STM32 boards.
+Command Line Interface
 =====
+For Nucleo STM32 boards.
+
