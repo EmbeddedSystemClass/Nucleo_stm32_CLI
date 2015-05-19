@@ -54,6 +54,11 @@
 /* Standard includes. */
 #include "string.h"
 
+#include "stm32l0xx_hal.h"
+
+extern UART_HandleTypeDef huart2;
+#include "cmsis_os.h"
+
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
 #include "task.h"
@@ -61,7 +66,7 @@
 #include "semphr.h"
 
 /* FreeRTOS+IO includes. */
-#include "FreeRTOS_IO.h"
+//#include "FreeRTOS_IO.h"
 
 /* Example includes. */
 #include "FreeRTOS_CLI.h"
@@ -81,7 +86,7 @@
 /*
  * The task that implements the command console processing.
  */
-static void prvUARTCommandConsoleTask( void *pvParameters );
+static void prvUARTCommandConsoleTask(void const * pvParameters );
 
 /*-----------------------------------------------------------*/
 
@@ -94,22 +99,26 @@ static const int8_t * const pcEndOfCommandOutputString = ( int8_t * ) "\r\n[Pres
 
 /* The peripheral used by the command interpreter (and the vWriteString()
 function). */
-static Peripheral_Descriptor_t xConsoleUART = NULL;
+//static Peripheral_Descriptor_t xConsoleUART = NULL;
 
 /*-----------------------------------------------------------*/
+osThreadId UARTCmdTaskHandle;
 
 void vUARTCommandConsoleStart( void )
 {
-	xTaskCreate( 	prvUARTCommandConsoleTask,				/* The task that implements the command console. */
-					( const int8_t * const ) "UARTCmd",		/* Text name assigned to the task.  This is just to assist debugging.  The kernel does not use this name itself. */
-					configUART_COMMAND_CONSOLE_STACK_SIZE,	/* The size of the stack allocated to the task. */
-					NULL,									/* The parameter is not used, so NULL is passed. */
-					configUART_COMMAND_CONSOLE_TASK_PRIORITY,/* The priority allocated to the task. */
-					&xCommandConsoleTask );					/* Used to store the handle to the created task. */
+  osThreadDef(UARTCmdTask, prvUARTCommandConsoleTask, configUART_COMMAND_CONSOLE_TASK_PRIORITY, 0, 128);
+  UARTCmdTaskHandle = osThreadCreate(osThread(UARTCmdTask), NULL);
+  
+//	xTaskCreate( 	prvUARTCommandConsoleTask,				/* The task that implements the command console. */
+//					( const int8_t * const ) "UARTCmd",		/* Text name assigned to the task.  This is just to assist debugging.  The kernel does not use this name itself. */
+//					configUART_COMMAND_CONSOLE_STACK_SIZE,	/* The size of the stack allocated to the task. */
+//					NULL,									/* The parameter is not used, so NULL is passed. */
+//					configUART_COMMAND_CONSOLE_TASK_PRIORITY,/* The priority allocated to the task. */
+//					&xCommandConsoleTask );					/* Used to store the handle to the created task. */
 }
 /*-----------------------------------------------------------*/
 
-static void prvUARTCommandConsoleTask( void *pvParameters )
+static void prvUARTCommandConsoleTask(void const * pvParameters )
 {
 int8_t cRxedChar, cInputIndex = 0, *pcOutputString;
 static int8_t cInputString[ cmdMAX_INPUT_SIZE ], cLastInputString[ cmdMAX_INPUT_SIZE ];
@@ -126,46 +135,56 @@ portBASE_TYPE xReturned;
 	(ulFlags) is not used in this case.  The default board rate is set by the
 	boardDEFAULT_UART_BAUD parameter.  The baud rate can be changed using a
 	FreeRTOS_ioctl() call with the ioctlSET_SPEED command. */
-	xConsoleUART = FreeRTOS_open( boardCOMMAND_CONSOLE_UART, ( uint32_t ) cmdPARAMTER_NOT_USED );
-	configASSERT( xConsoleUART );
+//	xConsoleUART = FreeRTOS_open( boardCOMMAND_CONSOLE_UART, ( uint32_t ) cmdPARAMTER_NOT_USED );
+//	configASSERT( xConsoleUART );
 
 	/* Change the Tx usage model from straight polled mode to use zero copy
 	buffers with interrupts.  In this mode, the UART will transmit characters
 	directly from the buffer passed to the FreeRTOS_write()	function. */
-	xReturned = FreeRTOS_ioctl( xConsoleUART, ioctlUSE_ZERO_COPY_TX, cmdPARAMTER_NOT_USED );
-	configASSERT( xReturned );
+//	xReturned = FreeRTOS_ioctl( xConsoleUART, ioctlUSE_ZERO_COPY_TX, cmdPARAMTER_NOT_USED );
+//	configASSERT( xReturned );
 
 	/* Change the Rx usage model from straight polled mode to use a character
 	queue.  Character queue reception is appropriate in this case as characters
 	can only be received as quickly as they can be typed, and need to be parsed
 	character by character. */
-	xReturned = FreeRTOS_ioctl( xConsoleUART, ioctlUSE_CHARACTER_QUEUE_RX, ( void * ) cmdMAX_INPUT_SIZE );
-	configASSERT( xReturned );
+//	xReturned = FreeRTOS_ioctl( xConsoleUART, ioctlUSE_CHARACTER_QUEUE_RX, ( void * ) cmdMAX_INPUT_SIZE );
+//	configASSERT( xReturned );
 
 	/* By default, the UART interrupt priority will have been set to the lowest
 	possible.  It must be kept at or below configMAX_LIBRARY_INTERRUPT_PRIORITY,
 	but	can be raised above its default priority using a FreeRTOS_ioctl() call
 	with the ioctlSET_INTERRUPT_PRIORITY command. */
-	xReturned = FreeRTOS_ioctl( xConsoleUART, ioctlSET_INTERRUPT_PRIORITY, ( void * ) ( configMIN_LIBRARY_INTERRUPT_PRIORITY - 1 ) );
-	configASSERT( xReturned );
+//	xReturned = FreeRTOS_ioctl( xConsoleUART, ioctlSET_INTERRUPT_PRIORITY, ( void * ) ( configMIN_LIBRARY_INTERRUPT_PRIORITY - 1 ) );
+//	configASSERT( xReturned );
 
 	/* Send the welcome message. */
-	if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms ) == pdPASS )
-	{
-		FreeRTOS_write( xConsoleUART, pcWelcomeMessage, strlen( ( char * ) pcWelcomeMessage ) );
-	}
+//	if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms ) == pdPASS )
+//	{
+//		FreeRTOS_write( xConsoleUART, pcWelcomeMessage, strlen( ( char * ) pcWelcomeMessage ) );
+//	}
+        if(UART_CheckIdleState(&huart2) == HAL_OK)
+        {
+          HAL_UART_Transmit(&huart2, (uint8_t *) pcWelcomeMessage, strlen( ( char * ) pcWelcomeMessage ) ,strlen( ( char * ) pcWelcomeMessage ) );
 
+        }
+        
 	for( ;; )
 	{
 		/* Only interested in reading one character at a time. */
-		FreeRTOS_read( xConsoleUART, &cRxedChar, sizeof( cRxedChar ) );
+//		FreeRTOS_read( xConsoleUART, &cRxedChar, sizeof( cRxedChar ) );
+                HAL_UART_Receive(&huart2, (uint8_t *) &cRxedChar, sizeof( cRxedChar ), 0xFFFFFFFF );
 
 		/* Echo the character back. */
-		if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms ) == pdPASS )
-		{
-			FreeRTOS_write( xConsoleUART, &cRxedChar, sizeof( cRxedChar ) );
-		}
-
+//		if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms ) == pdPASS )
+//		{
+//			FreeRTOS_write( xConsoleUART, &cRxedChar, sizeof( cRxedChar ) );
+//		}
+                if(UART_CheckIdleState(&huart2) == HAL_OK)
+                {
+                  HAL_UART_Transmit(&huart2, (uint8_t *) &cRxedChar, sizeof( cRxedChar ), sizeof( cRxedChar ) );
+                }
+                
 		if( cRxedChar == '\n' )
 		{
 			/* The input command string is complete.  Ensure the previous
@@ -173,13 +192,17 @@ portBASE_TYPE xReturned;
 			This task will be held in the Blocked state while the Tx completes,
 			if it has not already done so, so no CPU time will be wasted by
 			polling. */
-			if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms ) == pdPASS )
-			{
-				/* Start to transmit a line separator, just to make the output
-				easier to read. */
-				FreeRTOS_write( xConsoleUART, pcNewLine, strlen( ( char * ) pcNewLine ) );
-			}
+//			if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms ) == pdPASS )
+//			{
+//				/* Start to transmit a line separator, just to make the output
+//				easier to read. */
+//				FreeRTOS_write( xConsoleUART, pcNewLine, strlen( ( char * ) pcNewLine ) );
+//			}
+                      if(UART_CheckIdleState(&huart2) == HAL_OK)
+                      {
+                        HAL_UART_Transmit(&huart2, (uint8_t *) pcNewLine, strlen( ( char * ) pcNewLine ), strlen( ( char * ) pcNewLine ) );
 
+                      }
 			/* See if the command is empty, indicating that the last command is
 			to be executed again. */
 			if( cInputIndex == 0 )
@@ -196,7 +219,10 @@ portBASE_TYPE xReturned;
 				sending whatever it was sending last.  This task will be held
 				in the Blocked state while the Tx completes, if it has not
 				already done so, so no CPU time	is wasted polling. */
-				xReturned = FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms );
+//				xReturned = FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms );
+                                if(UART_CheckIdleState(&huart2) == HAL_OK)
+                                  xReturned = pdPASS;
+                                
 				if( xReturned == pdPASS )
 				{
 					/* Get the string to write to the UART from the command
@@ -204,7 +230,8 @@ portBASE_TYPE xReturned;
 					xReturned = FreeRTOS_CLIProcessCommand( cInputString, pcOutputString, configCOMMAND_INT_MAX_OUTPUT_SIZE );
 
 					/* Write the generated string to the UART. */
-					FreeRTOS_write( xConsoleUART, pcOutputString, strlen( ( char * ) pcOutputString ) );
+//					FreeRTOS_write( xConsoleUART, pcOutputString, strlen( ( char * ) pcOutputString ) );
+                                        HAL_UART_Transmit(&huart2, (uint8_t *) pcOutputString, strlen( ( char * ) pcOutputString ), strlen( ( char * ) pcOutputString ) );
 				}
 
 			} while( xReturned != pdFALSE );
@@ -218,12 +245,17 @@ portBASE_TYPE xReturned;
 			memset( cInputString, 0x00, cmdMAX_INPUT_SIZE );
 
 			/* Ensure the last string to be transmitted has completed. */
-			if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms ) == pdPASS )
-			{
-				/* Start to transmit a line separator, just to make the output
-				easier to read. */
-				FreeRTOS_write( xConsoleUART, pcEndOfCommandOutputString, strlen( ( char * ) pcEndOfCommandOutputString ) );
-			}
+//			if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms ) == pdPASS )
+//			{
+//				/* Start to transmit a line separator, just to make the output
+//				easier to read. */
+//				FreeRTOS_write( xConsoleUART, pcEndOfCommandOutputString, strlen( ( char * ) pcEndOfCommandOutputString ) );
+//			}
+                      if(UART_CheckIdleState(&huart2) == HAL_OK)
+                      {
+                        HAL_UART_Transmit(&huart2, (uint8_t *) pcEndOfCommandOutputString, strlen( ( char * ) pcEndOfCommandOutputString ), strlen( ( char * ) pcEndOfCommandOutputString ) );
+
+                      }
 		}
 		else
 		{
@@ -268,13 +300,19 @@ void vOutputString( const uint8_t * const pucMessage )
 	function intermingling with complete strings output from the command
 	interpreter as the command interpreter only holds the mutex on an output
 	string by output string basis. */
-	if( xConsoleUART != NULL )
-	{
-		if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd500ms ) == pdPASS )
-		{
-			FreeRTOS_write( xConsoleUART, pucMessage, strlen( ( char * ) pucMessage ) );
-		}
-	}
+//	if( xConsoleUART != NULL )
+//	{
+//		if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd500ms ) == pdPASS )
+//		{
+//			FreeRTOS_write( xConsoleUART, pucMessage, strlen( ( char * ) pucMessage ) );
+//		}
+//	}
+  
+    if(UART_CheckIdleState(&huart2) == HAL_OK)
+    {
+      HAL_UART_Transmit(&huart2, (uint8_t *) pucMessage, strlen( ( char * ) pucMessage ), strlen( ( char * ) pucMessage ) );
+
+    }
 }
 /*-----------------------------------------------------------*/
 

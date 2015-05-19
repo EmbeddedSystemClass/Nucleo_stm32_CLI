@@ -63,8 +63,10 @@ void StartDefaultTask(void const * argument);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-static uint8_t UART_TX_BUFF[100];
+uint8_t UART_TX_BUFF[100];
+uint8_t UART_RX_BUFF[100];
 
+extern void vUARTCommandConsoleStart( void );
 /* USER CODE END 0 */
 
 int main(void)
@@ -109,6 +111,11 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  
+  /* Start the tasks that implements the command console on the UART, as
+  described above. */
+  vUARTCommandConsoleStart();
+  
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -230,13 +237,13 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    //HAL_GPIO_TogglePin(GPIOA ,GPIO_PIN_5);
-    sprintf( (char *)UART_TX_BUFF, "test" );
-    strncat( ( char * ) UART_TX_BUFF, "\r\n", strlen( "\r\n" ) );
-
-    uint8_t len = strlen( (const char *) UART_TX_BUFF);
-
-    HAL_UART_Transmit_IT(&huart2,UART_TX_BUFF, len);
+//    HAL_GPIO_TogglePin(GPIOA ,GPIO_PIN_5);
+//    sprintf( (char *)UART_TX_BUFF, "test" );
+//    strncat( ( char * ) UART_TX_BUFF, "\r\n", strlen( "\r\n" ) );
+//
+//    uint8_t len = strlen( (const char *) UART_TX_BUFF);
+//
+//    HAL_UART_Transmit_IT(&huart2,UART_TX_BUFF, len);
     osDelay(1000);
   }
   /* USER CODE END 5 */ 
