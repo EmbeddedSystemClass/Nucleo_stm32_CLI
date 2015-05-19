@@ -89,7 +89,10 @@ int main(void)
   MX_USART2_UART_Init();
 
   /* USER CODE BEGIN 2 */
-
+  /* Register two command line commands to show task stats and run time stats
+  respectively. */
+  vRegisterCLICommands();
+  
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */

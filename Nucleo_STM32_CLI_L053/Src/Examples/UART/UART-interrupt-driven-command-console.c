@@ -185,7 +185,7 @@ portBASE_TYPE xReturned;
                   HAL_UART_Transmit(&huart2, (uint8_t *) &cRxedChar, sizeof( cRxedChar ), sizeof( cRxedChar ) );
                 }
                 
-		if( cRxedChar == '\n' )
+		if( cRxedChar == '\r' )
 		{
 			/* The input command string is complete.  Ensure the previous
 			UART transmission has finished before sending any more data.
