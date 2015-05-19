@@ -19,4 +19,4 @@ Connect STM32 Nucleo boards to PC through USB port.
 
 
 Software Setup: 
-PuTTY or any other Serial Terminal.
+PuTTY or any other standard dumb terminal.
