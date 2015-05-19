@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * File Name          : main.c
-  * Date               : 19/05/2015 06:36:47
+  * Date               : 19/05/2015 13:55:08
   * Description        : Main program body
   ******************************************************************************
   *
@@ -37,6 +37,9 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
+#include "stdio.h"
+
+#include "string.h"
 
 /* USER CODE END Includes */
 
@@ -60,6 +63,7 @@ void StartDefaultTask(void const * argument);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+static uint8_t UART_TX_BUFF[100];
 
 /* USER CODE END 0 */
 
@@ -143,15 +147,14 @@ void SystemClock_Config(void)
 
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
-  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
-  RCC_OscInitStruct.MSICalibrationValue = 0;
-  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_5;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = 16;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   HAL_RCC_OscConfig(&RCC_OscInitStruct);
 
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_SYSCLK;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
@@ -227,7 +230,14 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    //HAL_GPIO_TogglePin(GPIOA ,GPIO_PIN_5);
+    sprintf( (char *)UART_TX_BUFF, "test" );
+    strncat( ( char * ) UART_TX_BUFF, "\r\n", strlen( "\r\n" ) );
+
+    uint8_t len = strlen( (const char *) UART_TX_BUFF);
+
+    HAL_UART_Transmit_IT(&huart2,UART_TX_BUFF, len);
+    osDelay(1000);
   }
   /* USER CODE END 5 */ 
 }
