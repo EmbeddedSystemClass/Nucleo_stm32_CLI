@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "freertos_cli.h": "c",
+        "uart-interrupt-driven-command-console.h": "c",
+        "freertos.h": "c",
+        "queue.h": "c"
+    }
+}
